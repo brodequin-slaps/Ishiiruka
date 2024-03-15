@@ -42,13 +42,6 @@ GeneralConfigPane::GeneralConfigPane(wxWindow* parent, wxWindowID id) : wxPanel(
 void GeneralConfigPane::InitializeGUI()
 {
 	m_throttler_array_string.Add(_("Unlimited"));
-	for (int i = 10; i <= 200; i += 10)  // from 10% to 200%
-	{
-		if (i == 100)
-			m_throttler_array_string.Add(wxString::Format(_("%i%% (Normal Speed)"), i));
-		else
-			m_throttler_array_string.Add(wxString::Format(_("%i%%"), i));
-	}
 
 	for (const CPUCore& cpu_core : m_cpu_cores)
 		m_cpu_engine_array_string.Add(cpu_core.name);
@@ -121,9 +114,8 @@ void GeneralConfigPane::LoadGUIValues()
 	m_boot_default_iso_checkbox->SetValue(startup_params.bBootDefaultISO);
 	m_force_ntscj_checkbox->SetValue(startup_params.bForceNTSCJ);
 
-	u32 selection = std::lround(startup_params.m_EmulationSpeed * 10.0f);
-	if (selection < m_throttler_array_string.size())
-		m_throttler_choice->SetSelection(selection);
+	u32 selection = 0;
+	m_throttler_choice->SetSelection(selection);
 
 	for (size_t i = 0; i < m_cpu_cores.size(); ++i)
 	{
