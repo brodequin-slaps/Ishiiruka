@@ -199,7 +199,7 @@ void SConfig::SaveDisplaySettings(IniFile &ini)
 	IniFile::Section *display = ini.GetOrCreateSection("Display");
 
 	display->Set("FullscreenResolution", strFullscreenResolution);
-	display->Set("Fullscreen", bFullscreen);
+	display->Set("Fullscreen", 0);
 	display->Set("RenderToMain", bRenderToMain);
 	display->Set("RenderWindowXPos", iRenderWindowXPos);
 	display->Set("RenderWindowYPos", iRenderWindowYPos);
@@ -535,7 +535,7 @@ void SConfig::LoadDisplaySettings(IniFile &ini)
 #ifdef IS_PLAYBACK
 	display->Get("Fullscreen", &bFullscreen, false);
 #else
-	display->Get("Fullscreen", &bFullscreen, true);
+	display->Get("Fullscreen", &bFullscreen, false);
 #endif
 	display->Get("FullscreenResolution", &strFullscreenResolution, "Auto");
 #if defined IS_PLAYBACK && (defined _WIN32 || defined __APPLE__)
