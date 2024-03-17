@@ -649,7 +649,7 @@ void Renderer::SwapImpl(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight, co
 		}
 	}
 
-	Renderer::DrawDebugText();
+	//Renderer::DrawDebugText();
 	OSD::DrawMessages();
 	D3D::EndFrame();
 

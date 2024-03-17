@@ -707,7 +707,7 @@ void Renderer::SwapImpl(u32 xfb_addr, u32 fb_width, u32 fb_stride, u32 fb_height
 	// Reset viewport for drawing text
 	D3D::SetViewportAndScissor(0, 0, GetBackbufferWidth(), GetBackbufferHeight());
 	D3D::SetLinearCopySampler();
-	Renderer::DrawDebugText();
+	//Renderer::DrawDebugText();
 
 	OSD::DrawMessages();
 	D3D::EndFrame();

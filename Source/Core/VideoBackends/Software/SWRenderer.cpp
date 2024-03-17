@@ -120,7 +120,7 @@ void SWRenderer::SwapImpl(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight, 
 
 	OSD::DoCallbacks(OSD::CallbackType::OnFrame);
 
-	DrawDebugText();
+	//DrawDebugText();
 
 	SWOGLWindow::s_instance->ShowImage(GetCurrentColorTexture(), fbWidth * 4, fbWidth, fbHeight, 1.0);
 
