@@ -227,7 +227,7 @@ class PlatformX11 : public Platform
 		{
 			rendererIsFullscreen = X11Utils::ToggleFullscreen(dpy, win);
 #if defined(HAVE_XRANDR) && HAVE_XRANDR
-			XRRConfig->ToggleDisplayMode(false);
+			XRRConfig->ToggleDisplayMode(True);
 #endif
 		}
 
@@ -275,10 +275,10 @@ class PlatformX11 : public Platform
 					}
 					else if ((key == XK_Return) && (event.xkey.state & Mod1Mask))
 					{
-						fullscreen = false;
+						fullscreen = !fullscreen;
 						X11Utils::ToggleFullscreen(dpy, win);
 #if defined(HAVE_XRANDR) && HAVE_XRANDR
-						XRRConfig->ToggleDisplayMode(false);
+						XRRConfig->ToggleDisplayMode(fullscreen);
 #endif
 					}
 					else if (key >= XK_F1 && key <= XK_F8)
