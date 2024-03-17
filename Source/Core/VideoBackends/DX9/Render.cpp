@@ -650,7 +650,7 @@ void Renderer::SwapImpl(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight, co
 	}
 
 	//Renderer::DrawDebugText();
-	OSD::DrawMessages();
+	//OSD::DrawMessages();
 	D3D::EndFrame();
 
 	GFX_DEBUGGER_PAUSE_AT(NEXT_FRAME, true);

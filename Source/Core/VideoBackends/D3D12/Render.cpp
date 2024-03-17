@@ -709,7 +709,7 @@ void Renderer::SwapImpl(u32 xfb_addr, u32 fb_width, u32 fb_stride, u32 fb_height
 	D3D::SetLinearCopySampler();
 	//Renderer::DrawDebugText();
 
-	OSD::DrawMessages();
+	//OSD::DrawMessages();
 	D3D::EndFrame();
 
 	g_texture_cache->Cleanup(frameCount);

@@ -1537,7 +1537,7 @@ void Renderer::SwapImpl(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight,
 
 	// Do our OSD callbacks
 	OSD::DoCallbacks(OSD::CallbackType::OnFrame);
-	OSD::DrawMessages();
+	//OSD::DrawMessages();
 
 #ifdef ANDROID
 	if (s_surface_needs_change.IsSet())

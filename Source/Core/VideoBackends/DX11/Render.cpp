@@ -714,7 +714,7 @@ void Renderer::SwapImpl(u32 xfbAddr, u32 fbWidth, u32 fbStride, u32 fbHeight, co
 	}
 
 	//Renderer::DrawDebugText();
-	OSD::DrawMessages();
+	//OSD::DrawMessages();
 	D3D::EndFrame();
 
 	g_texture_cache->Cleanup(frameCount);

@@ -747,7 +747,7 @@ void Renderer::DrawScreen(const TargetRectangle& scaled_efb_rect, u32 xfb_addr,
 		backbuffer->GetWidth(), backbuffer->GetHeight());
 	//DrawDebugText();
 	OSD::DoCallbacks(OSD::CallbackType::OnFrame);
-	OSD::DrawMessages();
+	//OSD::DrawMessages();
 
 	// End drawing to backbuffer
 	vkCmdEndRenderPass(g_command_buffer_mgr->GetCurrentCommandBuffer());

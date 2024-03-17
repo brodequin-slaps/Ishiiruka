@@ -124,7 +124,7 @@ void DrawMessages()
 		{
 			const Message& msg = it->second;
 			int time_left = (int)(msg.m_timestamp - now);
-			DrawMessage(msg, top, left, time_left);
+			//DrawMessage(msg, top, left, time_left);
 
 			if (time_left <= 0)
 				it = s_messages.erase(it);
