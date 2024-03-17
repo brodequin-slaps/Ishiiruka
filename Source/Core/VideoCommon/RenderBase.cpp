@@ -331,7 +331,8 @@ void Renderer::DrawDebugText()
 
 	std::string final_yellow, final_cyan;
 
-	if (g_ActiveConfig.bShowFPS || SConfig::GetInstance().m_ShowFrameCount)
+	//if (g_ActiveConfig.bShowFPS || SConfig::GetInstance().m_ShowFrameCount)
+	if (false)
 	{
         std::string frame_time_str = std::to_string(frame_time);
         frame_time_str = frame_time_str.substr(0, 3);
@@ -339,13 +340,13 @@ void Renderer::DrawDebugText()
         while(frame_time_str.find(",") != std::string::npos)
             frame_time_str[frame_time_str.find(",")] = '.';
 
-		if (g_ActiveConfig.bShowFPS)
+		if (false && g_ActiveConfig.bShowFPS)
 			final_cyan += StringFromFormat("FPS: %u", m_fps_counter.GetFPS());
 
-        if (g_ActiveConfig.bShowFPS && g_ActiveConfig.bShowFrameTimes && SConfig::GetInstance().iPollingMethod == POLLING_ONSIREAD)
+        if (false && g_ActiveConfig.bShowFPS && g_ActiveConfig.bShowFrameTimes && SConfig::GetInstance().iPollingMethod == POLLING_ONSIREAD)
 			final_cyan += " (" + frame_time_str + " ms)";
 
-		if (g_ActiveConfig.bShowFPS && SConfig::GetInstance().m_ShowFrameCount)
+		if (false && g_ActiveConfig.bShowFPS && SConfig::GetInstance().m_ShowFrameCount)
 			final_cyan += " - ";
 
 		if (SConfig::GetInstance().m_ShowFrameCount)

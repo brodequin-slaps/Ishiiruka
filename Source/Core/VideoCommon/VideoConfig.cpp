@@ -93,7 +93,7 @@ void VideoConfig::Load(const std::string& ini_file)
 	settings->Get("ShowFPS", &bShowFPS, false);
 	settings->Get("ShowNetPlayPing", &bShowNetPlayPing, false);
 #else
-	settings->Get("ShowFPS", &bShowFPS, true);
+	settings->Get("ShowFPS", &bShowFPS, false);
 	settings->Get("ShowNetPlayPing", &bShowNetPlayPing, true);
 #endif
 	settings->Get("ShowNetPlayMessages", &bShowNetPlayMessages, false);
@@ -453,7 +453,7 @@ void VideoConfig::Save(const std::string& ini_file)
 	settings->Set("UseXFB", bUseXFB);
 	settings->Set("UseRealXFB", bUseRealXFB);
 	settings->Set("SafeTextureCacheColorSamples", iSafeTextureCache_ColorSamples);
-	settings->Set("ShowFPS", bShowFPS);
+	settings->Set("ShowFPS", false);
 	settings->Set("ShowNetPlayPing", bShowNetPlayPing);
 	settings->Set("ShowNetPlayMessages", bShowNetPlayMessages);
     settings->Set("ShowOSDClock", bShowOSDClock);
