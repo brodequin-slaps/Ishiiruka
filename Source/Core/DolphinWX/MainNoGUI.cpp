@@ -220,10 +220,10 @@ class PlatformX11 : public Platform
 	void SetTitle(const std::string& string) override { XStoreName(dpy, win, string.c_str()); }
 	void MainLoop() override
 	{
-		bool fullscreen = SConfig::GetInstance().bFullscreen;
+		bool fullscreen = false;
 		int last_window_width = SConfig::GetInstance().iRenderWindowWidth;
 		int last_window_height = SConfig::GetInstance().iRenderWindowHeight;
-		if (fullscreen)
+		if (false)
 		{
 			rendererIsFullscreen = X11Utils::ToggleFullscreen(dpy, win);
 #if defined(HAVE_XRANDR) && HAVE_XRANDR

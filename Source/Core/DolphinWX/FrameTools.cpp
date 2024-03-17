@@ -611,8 +611,7 @@ void CFrame::ToggleDisplayMode(bool bFullscreen)
 		ChangeDisplaySettings(nullptr, CDS_FULLSCREEN);
 	}
 #elif defined(HAVE_XRANDR) && HAVE_XRANDR
-	if (SConfig::GetInstance().strFullscreenResolution != "Auto")
-		m_XRRConfig->ToggleDisplayMode(bFullscreen);
+	m_XRRConfig->ToggleDisplayMode(false);
 #endif
 }
 
@@ -717,7 +716,7 @@ void CFrame::StartGame(const std::string& filename)
 	wxBusyCursor hourglass;
 
 	ToggleScreenSaver(false);
-	DoFullscreen(SConfig::GetInstance().bFullscreen);
+	DoFullscreen(false);
 
 	if (!BootManager::BootCore(filename))
 	{
