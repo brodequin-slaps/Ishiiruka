@@ -1303,7 +1303,7 @@ void CFrame::ParseHotkeys()
 
 	// Toggle fullscreen
 	if (IsHotkey(HK_FULLSCREEN))
-		DoFullscreen(!RendererIsFullscreen());
+		DoFullscreen(false);
 	// Pause and Unpause
 	if (IsHotkey(HK_PLAY_PAUSE))
 		DoPause();

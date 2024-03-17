@@ -213,11 +213,9 @@ void XRRConfiguration::ToggleDisplayMode(bool bFullscreen)
 {
   if (!bValid || !screenResources || !outputInfo || !crtcInfo || !fullMode)
     return;
-  if (bFullscreen == bIsFullscreen)
-    return;
 
   XGrabServer(dpy);
-  if (bFullscreen)
+  if (false)
   {
     XRRSetCrtcConfig(dpy, screenResources, outputInfo->crtc, CurrentTime, crtcInfo->x, crtcInfo->y,
                      fullMode, crtcInfo->rotation, crtcInfo->outputs, crtcInfo->noutput);

@@ -1333,7 +1333,7 @@ void CFrame::OnConnectWiimote(wxCommandEvent& event)
 // the entire screen (when we render to the main window).
 void CFrame::OnToggleFullscreen(wxCommandEvent& WXUNUSED(event))
 {
-	DoFullscreen(!RendererIsFullscreen());
+	DoFullscreen(false);
 }
 
 void CFrame::OnToggleDualCore(wxCommandEvent& WXUNUSED(event))
