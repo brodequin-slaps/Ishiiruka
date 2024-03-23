@@ -60,8 +60,8 @@ void cX11Window::XEventThread()
 			switch (event.type)
 			{
 			case ConfigureNotify:
-				XResizeWindow(dpy, win, event.xconfigure.width, event.xconfigure.height);
-				GLInterface->SetBackBufferDimensions(event.xconfigure.width, event.xconfigure.height);
+				//XResizeWindow(dpy, win, event.xconfigure.width, event.xconfigure.height);
+				//GLInterface->SetBackBufferDimensions(event.xconfigure.width, event.xconfigure.height);
 				break;
 			default:
 				break;

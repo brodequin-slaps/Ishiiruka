@@ -90,7 +90,7 @@ struct VideoConfig final
 	bool bVSync;
 	bool bRunning;
 	bool bWidescreenHack;
-	int iAspectRatio;
+	int iAspectRatio = (int)ASPECT_STRETCH;
 
     int GetCurrentAspect();
 

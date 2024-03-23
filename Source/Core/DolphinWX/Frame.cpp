@@ -1446,7 +1446,7 @@ void CFrame::ParseHotkeys()
 	{
 		OSDChoice = 2;
 		// Toggle aspect ratio
-		g_Config.iAspectRatio = (g_Config.iAspectRatio + 1) & 3;
+		g_Config.iAspectRatio = ASPECT_STRETCH;
 	}
 	if (IsHotkey(HK_TOGGLE_EFBCOPIES))
 	{

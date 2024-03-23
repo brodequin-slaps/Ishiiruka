@@ -473,9 +473,9 @@ static void wxSetKDEFullscreen(Display *display, Window rootWnd,
         //     exactly the same position as before it was made fullscreen
         //     (because wxTopLevelWindow::ShowFullScreen will call SetSize, thus
         //     setting the position for the second time).
-        XMoveResizeWindow(display, w,
-                          origRect->x, origRect->y,
-                          origRect->width, origRect->height);
+       // XMoveResizeWindow(display, w,
+                          //origRect->x, origRect->y,
+                          //origRect->width, origRect->height);
         XSync(display, False);
     }
 }

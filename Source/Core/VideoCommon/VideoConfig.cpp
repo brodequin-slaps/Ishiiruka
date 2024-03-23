@@ -60,9 +60,7 @@ VideoConfig::VideoConfig()
 
 int VideoConfig::GetCurrentAspect()
 {
-    if(SConfig::GetInstance().bMeleeForceWidescreen)
-        return ASPECT_16_9;
-    return iAspectRatio;
+    return (int)ASPECT_STRETCH;
 }
 
 void VideoConfig::Load(const std::string& ini_file)
@@ -83,7 +81,7 @@ void VideoConfig::Load(const std::string& ini_file)
 #ifdef IS_PLAYBACK
 	settings->Get("AspectRatio", &iAspectRatio, (int)ASPECT_AUTO);
 #else
-	settings->Get("AspectRatio", &iAspectRatio, (int)ASPECT_73_60);
+	settings->Get("AspectRatio", &iAspectRatio, (int)ASPECT_STRETCH);
 #endif
 	settings->Get("Crop", &bCrop, false);
 	settings->Get("UseXFB", &bUseXFB, 0);
