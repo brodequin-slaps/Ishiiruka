@@ -93,3 +93,8 @@ Tools/*.zs-old
 *.recipe
 
 Data/Sys/GameFiles/GALE01/install.bat
+
+.venv/*
+framedumps/*
+
+melee.iso

@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 2.8.8)
 project(dolphin-emu)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(USE_EGL "Enables EGL OpenGL Interface" OFF)
@@ -269,7 +269,7 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 # gcc uses some optimizations which might break stuff without this flag
-add_definitions(-fno-strict-aliasing -fno-exceptions)
+add_definitions(-fno-strict-aliasing) #-fno-exceptions)
 
 check_and_add_flag(VISIBILITY_INLINES_HIDDEN -fvisibility-inlines-hidden)
 
@@ -1072,7 +1072,7 @@ add_custom_command(TARGET unittests POST_BUILD COMMAND ${CMAKE_CTEST_COMMAND})
 ########################################
 # Start compiling our code
 #
-add_definitions(-std=c++1y)
+add_definitions(-std=c++2a)
 
 # These aren't actually needed for C11/C++11
 # but some dependencies require them (LLVM, libav).

@@ -32,6 +32,13 @@
 #include "VideoCommon/VideoBackendBase.h"
 #include "VideoCommon/VideoCommon.h"
 
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <cstring>
+#include <cstdlib>
+#include <string>
+
+
 class PostProcessor;
 
 struct EfbPokeData
@@ -223,13 +230,17 @@ private:
 		AVIDump::Frame state;
 	} m_frame_dump_config;
 
+	std::unique_ptr<boost::interprocess::mapped_region> mapped_region;
+
 	// NOTE: The methods below are called on the framedumping thread.
 	bool StartFrameDumpToAVI(const FrameDumpConfig& config);
 	void DumpFrameToAVI(const FrameDumpConfig& config);
 	void StopFrameDumpToAVI();
 	std::string GetFrameDumpNextImageFileName() const;
 	bool StartFrameDumpToImage(const FrameDumpConfig& config);
+	bool StartFrameDumpToShm(const FrameDumpConfig& config);
 	void DumpFrameToImage(const FrameDumpConfig& config);
+	void DumpFrameToShm(const FrameDumpConfig& config);
 
 };
 

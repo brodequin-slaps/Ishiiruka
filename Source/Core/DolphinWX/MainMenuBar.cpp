@@ -157,7 +157,7 @@ wxMenu* MainMenuBar::CreateMovieMenu() const
 	movie_menu->Check(IDM_SHOW_RTC_DISPLAY, config_instance.m_ShowRTC);
 	movie_menu->AppendSeparator();
 	movie_menu->AppendCheckItem(IDM_TOGGLE_DUMP_FRAMES, _("Dump Frames"));
-	movie_menu->Check(IDM_TOGGLE_DUMP_FRAMES, config_instance.m_DumpFrames);
+	movie_menu->Check(IDM_TOGGLE_DUMP_FRAMES, true);
 	movie_menu->AppendCheckItem(IDM_TOGGLE_DUMP_AUDIO, _("Dump Audio"));
 	movie_menu->Check(IDM_TOGGLE_DUMP_AUDIO, config_instance.m_DumpAudio);
 

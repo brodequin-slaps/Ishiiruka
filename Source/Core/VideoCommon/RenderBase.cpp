@@ -86,6 +86,10 @@ static float AspectToWidescreen(float aspect)
 	return aspect * ((16.0f / 9.0f) / (4.0f / 3.0f));
 }
 
+static constexpr auto shm_img_name = "melee_shm_frame";
+static constexpr int img_w = 64;
+static constexpr int img_size = img_w * img_w * 3;
+
 Renderer::Renderer()
 {
 	OSDChoice = 0;
@@ -96,6 +100,18 @@ Renderer::Renderer()
 	{
 		m_aspect_wide = SConfig::GetInstance().m_wii_aspect_ratio != 0;
 	}
+
+
+	// shm img buf shit
+	boost::interprocess::shared_memory_object::remove(shm_img_name);
+
+	//Create a shared memory object.
+    boost::interprocess::shared_memory_object shm (boost::interprocess::create_only, shm_img_name, boost::interprocess::read_write);
+	shm.truncate(img_size);
+	mapped_region = std::make_unique<boost::interprocess::mapped_region>(shm, boost::interprocess::read_write);
+	std::memset(mapped_region->get_address(), 0, mapped_region->get_size());
+
+	SConfig::GetInstance().m_DumpFrames = true;
 }
 
 Renderer::~Renderer()
@@ -103,6 +119,9 @@ Renderer::~Renderer()
 	ShutdownFrameDumping();
 	if (m_frame_dump_thread.joinable())
 		m_frame_dump_thread.join();
+
+	
+	boost::interprocess::shared_memory_object::remove(shm_img_name);
 }
 
 void Renderer::RenderToXFB(u32 xfbAddr, const EFBRectangle& sourceRc, u32 fbStride, u32 fbHeight, float Gamma)
@@ -594,8 +613,10 @@ TargetRectangle Renderer::CalculateFrameDumpDrawRectangle()
 	if (!g_ActiveConfig.bInternalResolutionFrameDumps || g_ActiveConfig.RealXFBEnabled())
 	{
 		// But still remove the borders, since the caller expects this.
-		rc.right = m_target_rectangle.GetWidth();
-		rc.bottom = m_target_rectangle.GetHeight();
+		//rc.right = m_target_rectangle.GetWidth();
+		//rc.bottom = m_target_rectangle.GetHeight();
+		rc.right = img_w;
+		rc.bottom = img_w;
 		return rc;
 	}
 
@@ -937,7 +958,8 @@ void Renderer::FinishFrameData()
 void Renderer::RunFrameDumps()
 {
 	Common::SetCurrentThreadName("FrameDumping");
-	bool dump_to_avi = !g_ActiveConfig.bDumpFramesAsImages;
+	bool dump_to_avi = false;
+	bool dump_to_shm = false;
 	bool frame_dump_started = false;
 
 	// If Dolphin was compiled without libav, we only support dumping to images.
@@ -984,6 +1006,8 @@ void Renderer::RunFrameDumps()
 			{
 				if (dump_to_avi)
 					frame_dump_started = StartFrameDumpToAVI(config);
+				else if (dump_to_shm)
+					frame_dump_started = StartFrameDumpToShm(config);
 				else
 					frame_dump_started = StartFrameDumpToImage(config);
 // just keep retrying if this is a playback build
@@ -999,6 +1023,8 @@ void Renderer::RunFrameDumps()
 			{
 				if (dump_to_avi)
 					DumpFrameToAVI(config);
+				else if (dump_to_shm)
+					DumpFrameToShm(config);
 				else
 					DumpFrameToImage(config);
 			}
@@ -1051,14 +1077,14 @@ void Renderer::StopFrameDumpToAVI()
 
 std::string Renderer::GetFrameDumpNextImageFileName() const
 {
-	return StringFromFormat("%sframedump_%u.png", File::GetUserPath(D_DUMPFRAMES_IDX).c_str(),
+	return StringFromFormat("%sframedump_%u.png", "./framedumps/",
 		m_frame_dump_image_counter);
 }
 
 bool Renderer::StartFrameDumpToImage(const FrameDumpConfig& config)
 {
 	m_frame_dump_image_counter = 1;
-	if (!SConfig::GetInstance().m_DumpFramesSilent)
+	/*if (!SConfig::GetInstance().m_DumpFramesSilent)
 	{
 		// Only check for the presence of the first image to confirm overwriting.
 		// A previous run will always have at least one image, and it's safe to assume that if the user
@@ -1069,16 +1095,114 @@ bool Renderer::StartFrameDumpToImage(const FrameDumpConfig& config)
 			if (!AskYesNoT("Frame dump image(s) '%s' already exists. Overwrite?", filename.c_str()))
 				return false;
 		}
-	}
+	}*/
 
 	return true;
 }
 
+bool Renderer::StartFrameDumpToShm(const FrameDumpConfig& config)
+{
+	m_frame_dump_image_counter = 1;
+	std::cout << "starting dumping frames shm\n";
+	return true;
+}
+
+bool TextureToPng_shm(const u8* data, int row_stride, const std::string& filename, int width,
+	int height, bool saveAlpha, bool frombgra, boost::interprocess::mapped_region& mapped_region)
+{
+	int sami = 0;
+	bool success = false;
+
+	if (!data)
+		return false;
+
+
+	std::vector<u8> buffer;
+	std::vector<u8> all_image;
+
+	if (!saveAlpha)
+		buffer.resize(width * 4);
+
+	buffer.reserve(3 * img_w);
+	all_image.reserve(img_size);
+
+	// Write image data
+	for (auto y = 0; y < height; ++y)
+	{
+		const u8* row_ptr = data + y * row_stride;
+		if (!saveAlpha || frombgra)
+		{
+			int src_r = frombgra ? 2 : 0;
+			int src_b = frombgra ? 0 : 2;
+			for (int x = 0; x < width; x++)
+			{
+				buffer[3 * x + 0] = row_ptr[4 * x + src_r];
+				buffer[3 * x + 1] = row_ptr[4 * x + 1];
+				buffer[3 * x + 2] = row_ptr[4 * x + src_b];
+			}
+			row_ptr = buffer.data();
+		}
+
+		std::copy(buffer.begin(), buffer.begin() + 3*width, std::back_inserter(all_image));
+	}
+		// The old API uses u8* instead of const u8*. It doesn't write
+		// to this pointer, but to fit the API, we have to drop the const qualifier.
+
+	std::memcpy(mapped_region.get_address(), (void*)all_image.data(), std::min(mapped_region.get_size(), all_image.size()));
+
+	success = true;
+	return success;
+}
+
 void Renderer::DumpFrameToImage(const FrameDumpConfig& config)
 {
-	std::string filename = GetFrameDumpNextImageFileName();
-	TextureToPng(config.data, config.stride, filename, config.width, config.height, false);
+
+	//std::string filename = GetFrameDumpNextImageFileName();
+	//TextureToPng(config.data, config.stride, filename, config.width, config.height, false);
+	TextureToPng_shm(config.data, config.stride, "", config.width, config.height, false, false, *mapped_region.get());
+	//if (config.data)
+		//std::memcpy(mapped_region->get_address(), config.data, mapped_region->get_size());
+	//std::memset(mapped_region->get_address(), 0, mapped_region->get_size());
 	m_frame_dump_image_counter++;
+}
+
+void Renderer::DumpFrameToShm(const FrameDumpConfig& config)
+{
+	static int color = 0;
+
+	if (color++ == 0)
+	{
+		std::cout << "(shm) size(x, y) = (" << config.width << ", " << config.height << ")\n";
+	}
+
+	if (config.data != nullptr)
+	{
+		std::vector<u8> all_image;
+		std::vector<u8> buffer;
+		buffer.resize(config.width * 3);
+		for (auto y = 0; y < config.height; ++y)
+		{
+			const u8* row_ptr = config.data + y * config.stride;
+
+			int src_r = 0;
+			int src_b = 2;
+			for (int x = 0; x < config.width; x++)
+			{
+				buffer[3 * x + 0] = row_ptr[4 * x + src_r];
+				buffer[3 * x + 1] = row_ptr[4 * x + 1];
+				buffer[3 * x + 2] = row_ptr[4 * x + src_b];
+			}
+			row_ptr = buffer.data();
+			std::copy(buffer.begin(), buffer.end(), all_image.end());
+
+			// The old API uses u8* instead of const u8*. It doesn't write
+			// to this pointer, but to fit the API, we have to drop the const qualifier.
+			//std::memcpy(mapped_region->get_address(), const_cast<u8*>(row_ptr), buffer.size());
+			//png_write_row(png_ptr, const_cast<u8*>(row_ptr));
+		}
+		std::cout << "got to memcpy\n";
+		//std::memcpy(mapped_region->get_address(), (void*)all_image.data(), img_size);
+	}
 }
 
 bool Renderer::UseVertexDepthRange() const
