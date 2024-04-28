@@ -86,7 +86,7 @@ static float AspectToWidescreen(float aspect)
 	return aspect * ((16.0f / 9.0f) / (4.0f / 3.0f));
 }
 
-static constexpr auto shm_img_name = "melee_shm_frame";
+//static constexpr auto shm_img_name = "melee_shm_frame";
 static constexpr int img_w = 64;
 static constexpr int img_size = img_w * img_w * 3;
 
@@ -101,12 +101,13 @@ Renderer::Renderer()
 		m_aspect_wide = SConfig::GetInstance().m_wii_aspect_ratio != 0;
 	}
 
+	std::cout << "using shm name = " << SConfig::GetInstance().m_strRgbShmName << std::endl;
 
 	// shm img buf shit
-	boost::interprocess::shared_memory_object::remove(shm_img_name);
+	boost::interprocess::shared_memory_object::remove(SConfig::GetInstance().m_strRgbShmName.c_str());
 
 	//Create a shared memory object.
-    boost::interprocess::shared_memory_object shm (boost::interprocess::create_only, shm_img_name, boost::interprocess::read_write);
+    boost::interprocess::shared_memory_object shm (boost::interprocess::create_only, SConfig::GetInstance().m_strRgbShmName.c_str(), boost::interprocess::read_write);
 	shm.truncate(img_size);
 	mapped_region = std::make_unique<boost::interprocess::mapped_region>(shm, boost::interprocess::read_write);
 	std::memset(mapped_region->get_address(), 0, mapped_region->get_size());
@@ -121,7 +122,7 @@ Renderer::~Renderer()
 		m_frame_dump_thread.join();
 
 	
-	boost::interprocess::shared_memory_object::remove(shm_img_name);
+	boost::interprocess::shared_memory_object::remove(SConfig::GetInstance().m_strRgbShmName.c_str());
 }
 
 void Renderer::RenderToXFB(u32 xfbAddr, const EFBRectangle& sourceRc, u32 fbStride, u32 fbHeight, float Gamma)

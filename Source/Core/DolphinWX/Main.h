@@ -55,6 +55,7 @@ private:
 	bool m_hide_seekbar = false;
 	bool m_prev_seekbar = false;
 	bool m_enable_cout = false;
+	bool m_rgb_shm_name_found = false;
 	wxString m_confirm_setting;
 	wxString m_video_backend_name;
 	wxString m_audio_emulation_name;
@@ -64,6 +65,7 @@ private:
 	wxString m_user_path;
 	wxString m_file_to_load;
 	wxString m_movie_file;
+	wxString m_rgb_shm_name;
 	std::unique_ptr<wxLocale> m_locale;
 };
 

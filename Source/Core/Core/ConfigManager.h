@@ -270,6 +270,7 @@ struct SConfig : NonCopyable
 	EBootType m_BootType;
 
 	std::string m_strVideoBackend;
+	std::string m_strRgbShmName;
 	std::string m_strSlippiInput;
 	std::string m_strOutputDirectory;
 	std::string m_strOutputFilenameBase;

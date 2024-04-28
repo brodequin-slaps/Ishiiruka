@@ -142,6 +142,11 @@ bool DolphinApp::OnInit()
 	if (m_select_video_backend && !m_video_backend_name.empty())
 		SConfig::GetInstance().m_strVideoBackend = WxStrToStr(m_video_backend_name);
 
+	if (m_rgb_shm_name_found && !m_rgb_shm_name.empty())
+	{
+		SConfig::GetInstance().m_strRgbShmName = WxStrToStr(m_rgb_shm_name);
+	}
+
 #ifdef IS_PLAYBACK
 	// Fallback to a default config file path if the user fails to provide one
 	if (m_select_slippi_input && !m_slippi_input_name.empty())
@@ -330,6 +335,7 @@ void DolphinApp::OnInitCmdLine(wxCmdLineParser &parser)
 #endif
 	    {wxCMD_LINE_OPTION, "m", "movie", "Play a movie file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL},
 	    {wxCMD_LINE_OPTION, "u", "user", "User folder path", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL},
+		{wxCMD_LINE_OPTION, "r", "rgb_shm_name", "rgb shared memory name", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL},
 	    {wxCMD_LINE_NONE, nullptr, nullptr, nullptr, wxCMD_LINE_VAL_NONE, 0}};
 
 	parser.SetDesc(desc);
@@ -397,6 +403,7 @@ bool DolphinApp::OnCmdLineParsed(wxCmdLineParser &parser)
 	m_select_output_directory = parser.Found("output-directory", &m_output_directory);
 	m_select_output_filename_base = parser.Found("output-filename-base", &m_output_filename_base);
 	m_play_movie = parser.Found("movie", &m_movie_file);
+	m_rgb_shm_name_found = parser.Found("rgb_shm_name", &m_rgb_shm_name);
 	parser.Found("user", &m_user_path);
 
 	return true;
