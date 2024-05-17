@@ -326,6 +326,7 @@ void SlippiSpectateServer::SlippicommSocketThread(void)
 
 		ENetEvent event;
 		while (enet_host_service(server, &event, 1) > 0)
+		//while (enet_host_service(server, &event, 10000) > 0)
 		{
 			switch (event.type)
 			{
@@ -337,6 +338,15 @@ void SlippiSpectateServer::SlippicommSocketThread(void)
 
 				std::shared_ptr<SlippiSocket> newSlippiSocket(new SlippiSocket());
 				newSlippiSocket->m_peer = event.peer;
+
+				//INFO_LOG(SLIPPI, "earliestTimeout: %d", event.peer->earliestTimeout);
+				//INFO_LOG(SLIPPI, "nextTimeout: %d", event.peer->nextTimeout);
+				//INFO_LOG(SLIPPI, "timeoutLimit: %d", event.peer->timeoutLimit);
+				//INFO_LOG(SLIPPI, "timeoutMaximum: %d", event.peer->timeoutMaximum);
+				//INFO_LOG(SLIPPI, "timeoutMinimum: %d", event.peer->timeoutMinimum);
+
+				event.peer->timeoutMinimum = 20000; //prevents disconnects when loading shit
+
 				m_sockets[event.peer->incomingPeerID] = newSlippiSocket;
 				break;
 			}
@@ -350,6 +360,12 @@ void SlippiSpectateServer::SlippicommSocketThread(void)
 			}
 			case ENET_EVENT_TYPE_DISCONNECT:
 			{
+				INFO_LOG(SLIPPI, "earliestTimeout: %d\n", event.peer->earliestTimeout);
+				INFO_LOG(SLIPPI, "nextTimeout: %d\n", event.peer->nextTimeout);
+				INFO_LOG(SLIPPI, "timeoutLimit: %d\n", event.peer->timeoutLimit);
+				INFO_LOG(SLIPPI, "timeoutMaximum: %d\n", event.peer->timeoutMaximum);
+				INFO_LOG(SLIPPI, "timeoutMinimum: %d\n", event.peer->timeoutMinimum);
+
 				INFO_LOG(SLIPPI, "A spectator disconnected from %x:%u.\n", event.peer->address.host,
 				         event.peer->address.port);
 
