@@ -346,6 +346,7 @@ void SlippiSpectateServer::SlippicommSocketThread(void)
 				//INFO_LOG(SLIPPI, "timeoutMinimum: %d", event.peer->timeoutMinimum);
 
 				event.peer->timeoutMinimum = 1000*60*20; //prevents disconnects when loading shit
+				event.peer->timeoutMaximum = 1000*60*30; //prevents disconnects when loading shit
 
 				m_sockets[event.peer->incomingPeerID] = newSlippiSocket;
 				break;
